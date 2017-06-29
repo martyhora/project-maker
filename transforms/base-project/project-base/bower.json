@@ -1,0 +1,27 @@
+{
+  "name": "app-project-maker-application",
+  "description": "Project Maker generated application",
+  "main": "index.php",
+  "authors": [
+    "Martin Hora"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "jquery-ui": "~1.11.4",
+    "AdminLTE": "admin-lte#2.3.5",
+    "Ionicons": "ionicons#~2.0.1",
+    "jqueryui-timepicker-addon": "~1.5.5",
+    "font-awesome": "~4.4.0",
+    "nette.ajax.js": "~2.1.0"
+  }
+}

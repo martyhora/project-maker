@@ -1,0 +1,19 @@
+{redefine table-open-tag}
+<table class="table table-striped table-hover table-responsive">
+{/redefine}
+
+{define col-transform_id}
+    <td>{$row->transform->title}</td>
+{/define}
+
+{define row-actions}
+    <a href="{plink Project:edit id => $row->id}">
+        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+    </a>
+    <a href="{plink Project:delete id => $row->id}" class="confirm-delete">
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+    </a>
+    <a href="{plink Module:makeProject id => $row->id}">
+        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+    </a>
+{/define}

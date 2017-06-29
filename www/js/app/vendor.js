@@ -1,0 +1,8 @@
+import 'script-loader!../../../bower_components/jquery/dist/jquery.min.js'
+import 'script-loader!../../../bower_components/jquery-ui/jquery-ui.min.js'
+import 'script-loader!../../../bower_components/jquery-ui/ui/i18n/datepicker-cs.js'
+import 'script-loader!../../../bower_components/AdminLTE/dist/js/app.min.js'
+import 'script-loader!../../../bower_components/nette.ajax.js/nette.ajax.js'
+import 'script-loader!../../../bower_components/nette-forms/src/assets/netteForms.js'
+import 'script-loader!../../../vendor/voda/date-input/dateInput.js'
+import 'script-loader!../../../bower_components/AdminLTE/dist/js/app.min.js'

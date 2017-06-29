@@ -1,0 +1,8 @@
+app/config/config.local.neon
+/temp
+/log
+/www/build/css
+/www/build/js
+/node_modules
+/bower_components
+/vendor/

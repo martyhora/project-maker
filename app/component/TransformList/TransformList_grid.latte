@@ -1,0 +1,14 @@
+{redefine table-open-tag}
+<table class="table table-striped table-hover table-responsive">
+{/redefine}
+
+
+
+{define row-actions}
+    <a href="{plink Transform:edit id => $row->id}">
+        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+    </a>
+    <a href="{plink Transform:delete id => $row->id}" class="confirm-delete">
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+    </a>
+{/define}
