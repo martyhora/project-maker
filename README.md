@@ -4,6 +4,8 @@ Web application written in Nette framework that allows you to define structure o
 
 The application generates all the grids and forms for you.
 
+The defined structure of the backend is transformed to a Nette application by default but the transforming options are modular and could be added. The transforms are stored in the folder ```transforms```.
+
 # Installation
 
 - clone project by running ```git clone https://github.com/martyhora/project-maker``` into your DocumentRoot path
