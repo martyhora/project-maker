@@ -2,9 +2,13 @@
 
 namespace CrudMaker;
 
+use Transform\ITransformation;
+
+require_once __DIR__ . '/../ITransformation.php';
+
 require_once __DIR__ . '/Tools.php';
 
-class CrudMaker
+class CrudMaker implements ITransformation
 {
     const BASE_CRUD = 'crud';
 
@@ -30,7 +34,7 @@ class CrudMaker
      * $config = [
      *     'title' => '',
      * ];
-     * 
+     *
      * @var array
      */
     protected $config = [];
@@ -65,8 +69,8 @@ class CrudMaker
     {
         @mkdir($this->buildPath . '/app');
         @mkdir($this->buildPath . '/app/presenters');
-        @mkdir($this->buildPath . '/app/presenters/templates');   
-        @mkdir($this->buildPath . '/app/presenters/templates/' . ucfirst($this->getTitle()));   
+        @mkdir($this->buildPath . '/app/presenters/templates');
+        @mkdir($this->buildPath . '/app/presenters/templates/' . ucfirst($this->getTitle()));
         @mkdir($this->buildPath . '/app/model');
         @mkdir($this->buildPath . '/app/component');
         @mkdir($this->buildPath . '/app/component/' . ucfirst($this->getTitle()) . 'Form');
@@ -157,10 +161,10 @@ class CrudMaker
 
     protected function getOptionsForSelectBoxLine($field, $params)
     {
-        $modelName = $this->getModelNameFromSelectDbField($field); 
+        $modelName = $this->getModelNameFromSelectDbField($field);
 
         $optionCaption = !empty($params['caption_column']) ? $params['caption_column'] : self::DEFAULT_OPTION_CAPTION_COLUMN;
-        
+
         $options = '          $options = $this->' . $modelName . 'Repository->findAll()->order(\'' . $optionCaption . '\')->fetchPairs(\'id\', \'' . $optionCaption . '\');';
 
         return $options;
@@ -234,7 +238,7 @@ class CrudMaker
 
                 case 'select_db':
                 case 'radio_db':
-                    $modelName = $this->getModelNameFromSelectDbField($field); 
+                    $modelName = $this->getModelNameFromSelectDbField($field);
 
                     $formField = 'select_db' == $params['type'] ? $this->getSelectDbField($field, $params) : $this->getRadioDbField($field, $params);
 
@@ -347,8 +351,8 @@ class CrudMaker
         $content = file_get_contents($listFile);
 
         $content = str_replace(self::LIST_FIELDS_ANNOTATION, implode(PHP_EOL . PHP_EOL, $listFields), $content);
-        
-        $content = str_replace(self::FILTER_FORM_FIELDS_ANNOTATION, implode(PHP_EOL . PHP_EOL, $filterFormFields), $content);        
+
+        $content = str_replace(self::FILTER_FORM_FIELDS_ANNOTATION, implode(PHP_EOL . PHP_EOL, $filterFormFields), $content);
 
         $content = $this->injectDependencyModels($dependencyModels, $content);
 
@@ -366,7 +370,7 @@ class CrudMaker
     protected function processFolder($path)
     {
         $this->createFolders();
-        
+
         foreach (scandir($path) as $file)
         {
             if (in_array($file, ['.', '..']) || is_dir($path . '/' . $file))
@@ -421,8 +425,8 @@ class CrudMaker
                     }
                     else
                     {
-                        $fieldsArr[] = "`{$field}` VARCHAR(255) NULL DEFAULT NULL";                
-                    }                    
+                        $fieldsArr[] = "`{$field}` VARCHAR(255) NULL DEFAULT NULL";
+                    }
                     break;
                 case 'textarea':
                     $fieldsArr[] = "`{$field}` TEXT NULL DEFAULT NULL";
@@ -493,7 +497,7 @@ class CrudMaker
     public function makeMenu()
     {
         $title = ucfirst($this->getTitle());
-        
+
 
         $menu = '
     <li>
