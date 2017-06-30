@@ -4,6 +4,7 @@ namespace App\Component;
 
 use App\Model,
     Nette;
+use Nette\Application\UI\Form;
 
 class TransformList extends \Nette\Application\UI\Control
 {   
