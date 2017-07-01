@@ -68,6 +68,7 @@ class CrudMaker implements ITransformation
     protected function createFolders()
     {
         @mkdir($this->buildPath . '/app');
+        @mkdir($this->buildPath . '/app/config');
         @mkdir($this->buildPath . '/app/presenters');
         @mkdir($this->buildPath . '/app/presenters/templates');
         @mkdir($this->buildPath . '/app/presenters/templates/' . ucfirst($this->getTitle()));
@@ -483,21 +484,31 @@ class CrudMaker implements ITransformation
     {
         $title = ucfirst($this->getTitle());
 
-        $config = "
-    - App\\Model\\{$title}
-
+        $configs = [
+            'models' => "
+    - App\\Model\\{$title}",
+            'components' => "
     {$this->getTitle()}Form: App\Component\\{$title}Form
-    {$this->getTitle()}List: App\Component\\{$title}List
+    {$this->getTitle()}List: App\Component\\{$title}List",
+        ];
 
-    ";
+        $firstConfig = key($configs);
 
-        file_put_contents($this->buildPath . '/app/config.neon', $config, FILE_APPEND);
+        if (!file_exists("{$this->buildPath}/app/config/{$firstConfig}.neon")) {
+            $this->processFolder(__DIR__ . '/app/config/');
+        }
+
+        foreach ($configs as $configFile => $config)
+        {
+            $configPath = "{$this->buildPath}/app/config/{$configFile}.neon";
+
+            file_put_contents($configPath, $config, FILE_APPEND);
+        }
     }
 
     public function makeMenu()
     {
         $title = ucfirst($this->getTitle());
-
 
         $menu = '
     <li>
@@ -514,7 +525,7 @@ class CrudMaker implements ITransformation
 
     ';
 
-        file_put_contents($this->buildPath . '/app/menu.latte', $menu, FILE_APPEND);
+        file_put_contents($this->buildPath . '/app/presenters/templates/menu.latte', $menu, FILE_APPEND);
     }
 
     public function copyProjectBase()

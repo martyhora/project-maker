@@ -1,0 +1,3 @@
+services:
+    - App\Model\Authenticator
+    - App\Model\UserRepository
