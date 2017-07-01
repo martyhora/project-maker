@@ -23,10 +23,10 @@ class CrudMaker implements ITransformation
 
     const DATE_CREATED_FIELD = 'date_created';
 
-    protected $buildPath = './';
-    protected $transformPath = './';
+    private $buildPath = './';
+    private $transformPath = './';
 
-    protected $projectName = '';
+    private $projectName = '';
 
     /**
      * Konfigurace CRUDu
@@ -65,7 +65,7 @@ class CrudMaker implements ITransformation
         $this->projectName = $projectName;
     }
 
-    protected function createFolders()
+    private function createFolders()
     {
         @mkdir($this->buildPath . '/app');
         @mkdir($this->buildPath . '/app/config');
@@ -79,12 +79,12 @@ class CrudMaker implements ITransformation
         @mkdir($this->buildPath . '/sql');
     }
 
-    protected function makePresenter()
+    private function makePresenter()
     {
         $this->processFolder(__DIR__ . '/app/presenters/');
     }
 
-    protected function makeModel()
+    private function makeModel()
     {
         $modelPath = __DIR__ . '/app/model/';
 
@@ -134,7 +134,7 @@ class CrudMaker implements ITransformation
         file_put_contents($filename, $content);
     }
 
-    protected function getRequiredMethodCall($params)
+    private function getRequiredMethodCall($params)
     {
         if (empty($params['required']))
         {
@@ -144,24 +144,24 @@ class CrudMaker implements ITransformation
         return "->addRule(Form::FILLED, \"Pole '{$params['caption']}' je povinné.\")";
     }
 
-    protected function makeTemplates()
+    private function makeTemplates()
     {
         $this->processFolder(__DIR__ . '/app/presenters/templates/' . ucfirst(self::BASE_CRUD));
     }
 
-    protected function getTableByField($field)
+    private function getTableByField($field)
     {
         return str_replace('_id', '', $field);
     }
 
-    protected function getModelNameFromSelectDbField($field)
+    private function getModelNameFromSelectDbField($field)
     {
         $tools = new Tools;
 
         return $tools->underscoreToCamelCase($this->getTableByField($field));
     }
 
-    protected function getOptionsForSelectBoxLine($field, $params)
+    private function getOptionsForSelectBoxLine($field, $params)
     {
         $modelName = $this->getModelNameFromSelectDbField($field);
 
@@ -172,7 +172,7 @@ class CrudMaker implements ITransformation
         return $options;
     }
 
-    protected function getSelectDbField($field, $params)
+    private function getSelectDbField($field, $params)
     {
         $formField = $this->getOptionsForSelectBoxLine($field, $params) . '
 
@@ -183,7 +183,7 @@ class CrudMaker implements ITransformation
         return $formField;
     }
 
-    protected function getRadioDbField($field, $params)
+    private function getRadioDbField($field, $params)
     {
         $formField = $this->getOptionsForSelectBoxLine($field, $params) . '
 
@@ -194,7 +194,7 @@ class CrudMaker implements ITransformation
         return $formField;
     }
 
-    public function getTextField($field, $params)
+    private function getTextField($field, $params)
     {
         $formField = '          $form->addText(\'' . $field . '\', \'' . ucfirst($params['caption']) . '\')->setAttribute(\'class\', \'form-control\')';
 
@@ -203,7 +203,7 @@ class CrudMaker implements ITransformation
         return $formField;
     }
 
-    protected function makeForm()
+    private function makeForm()
     {
         $formFolder = __DIR__ . '/app/component/' . ucfirst(self::BASE_CRUD) . 'Form';
 
@@ -263,7 +263,7 @@ class CrudMaker implements ITransformation
         file_put_contents($formFile, $content);
     }
 
-    protected function injectDependencyModels(array $dependencyModels, $content)
+    private function injectDependencyModels(array $dependencyModels, $content)
     {
         if (!$dependencyModels)
         {
@@ -293,7 +293,7 @@ class CrudMaker implements ITransformation
         return $content;
     }
 
-    protected function makeList()
+    private function makeList()
     {
         $tools = new Tools;
 
@@ -369,7 +369,7 @@ class CrudMaker implements ITransformation
         file_put_contents($listFile, $content);
     }
 
-    protected function processFolder($path)
+    private function processFolder($path)
     {
         $this->createFolders();
 
@@ -390,7 +390,7 @@ class CrudMaker implements ITransformation
         }
     }
 
-    protected function transFormContent($originalContent)
+    private function transFormContent($originalContent)
     {
         $content = str_replace(ucfirst(self::BASE_CRUD), ucfirst($this->getTitle()), $originalContent);
         $content = str_replace(lcfirst(self::BASE_CRUD), lcfirst($this->getTitle()), $content);
@@ -398,7 +398,7 @@ class CrudMaker implements ITransformation
         return $content;
     }
 
-    public function makeSql()
+    private function makeSql()
     {
         $tools = new Tools;
         $table = $tools->fromCamelCase($this->getTitle());
@@ -481,7 +481,7 @@ class CrudMaker implements ITransformation
         }
     }
 
-    public function makeConfig()
+    private function makeConfig()
     {
         $title = ucfirst($this->getTitle());
 
@@ -529,7 +529,7 @@ class CrudMaker implements ITransformation
         file_put_contents($this->buildPath . '/app/presenters/templates/menu.latte', $menu, FILE_APPEND);
     }
 
-    public function copyProjectBase()
+    private function copyProjectBase()
     {
         $tools = new Tools;
 
@@ -549,7 +549,7 @@ class CrudMaker implements ITransformation
         file_put_contents($layoutPath, $content);
     }
 
-    public function clean()
+    private function clean()
     {
         $tools = new Tools;
 
