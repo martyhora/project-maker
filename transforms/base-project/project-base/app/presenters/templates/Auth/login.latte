@@ -3,23 +3,29 @@
 {block #content}
 
 <div class="login-box">
-  <div class="login-logo">
-    <a href="">[PROJECT_TITLE]</a>
-  </div>
-  <div class="login-box-body">
-    <p class="login-box-msg">Přihlašte se, prosím.</p>
-    {form signInForm}
-      {control $form errors}
-      <div class="form-group has-feedback">
-      	{input username}
-        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-      </div>
-      <div class="form-group has-feedback">
-        {input password}
-        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-      </div>
-      {input send}
-      <br>
-    {/form}
-  </div>
+    <div class="login-logo">
+        <a href="">[PROJECT_TITLE]</a>
+    </div>
+
+    <div class="login-box-body">
+        <p class="login-box-msg">Přihlašte se, prosím.</p>
+
+        {form signInForm}
+        <div class="alert alert-danger">
+            {control $form errors}
+        </div>
+
+        <div class="form-group has-feedback">
+            {input username}
+            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+        </div>
+
+        <div class="form-group has-feedback">
+            {input password}
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        </div>
+
+        {input send}
+        {/form}
+    </div>
 </div>
