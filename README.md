@@ -12,6 +12,6 @@ The defined structure of the backend is transformed to a Nette application by de
 - run ```composer install``` in the project root
 - run ```npm i``` in the project root
 - run ```webpack --watch``` to compile changes in JS a LESS files
-- create database and run SQL script in ```/app/sql/db.sql``` to create database structure in it
+- create database and run SQL scripts in ```/sql/db.sql``` and ```/sql/user.sql``` to create database structure in it
 - create ```app/config/config.local.neon``` and set up the the database connection
 - open the project in the browser
