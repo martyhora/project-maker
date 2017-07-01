@@ -3,15 +3,22 @@
 namespace App\Presenters;
 
 use App\Model;
+use App\Component;
 
 use Nette\Application\BadRequestException;
+use Nette\Database\Table\ActiveRow;
 
 class TransformPresenter extends BasePresenter
 {
-    /**
-     * @var Model\TransformRepository
-     */
-    protected $transformRepository;
+    /** @var Model\TransformRepository @inject */
+    public $transformRepository;
+
+    /** @var Component\ITransformFormFactory @inject */
+    public $transformFormFactory;
+
+    /** @var Component\ITransformListFactory @inject */
+    public $transformListFactory;
+
 
     public function __construct(Model\TransformRepository $transformRepository)
     {
@@ -51,14 +58,21 @@ class TransformPresenter extends BasePresenter
         $this->flashMessage('Záznam byl vymazán.', 'success');
         $this->redirect('Transform:');                               
     }
-    
+
     protected function createComponentTransformForm()
     {
-        return $this->context->getService('transformForm');
+        $component = $this->transformFormFactory->create($this->getParameter('id'));
+
+        $component->onTransformSave[] = function(Component\TransformForm $form, ActiveRow $transform) {
+            $this->presenter->flashMessage('Záznam byl uložen.', 'success');
+            $this->presenter->redirect('Transform:');
+        };
+
+        return $component;
     }
 
     protected function createComponentTransformList()
     {
-        return $this->context->getService('transformList');
+        return $this->transformListFactory->create();
     }
 }

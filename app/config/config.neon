@@ -1,6 +1,10 @@
 # WARNING: it is CRITICAL that this file & directory are NOT accessible directly via a web browser!
 # https://nette.org/security-warning
 
+includes:
+    - models.neon
+    - components.neon
+
 parameters:
 
 
@@ -23,16 +27,3 @@ latte:
 
 services:
     router: App\RouterFactory::createRouter
-
-    - App\Model\Authenticator
-    - App\Model\UserRepository
-    - App\Model\ProjectRepository
-    - App\Model\ModuleRepository
-    - App\Model\TransformRepository
-
-    projectForm: App\Component\ProjectForm
-    projectList: App\Component\ProjectList
-    moduleForm: App\Component\ModuleForm
-    moduleList: App\Component\ModuleList
-    transformForm: App\Component\TransformForm
-    transformList: App\Component\TransformList

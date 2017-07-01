@@ -14,8 +14,18 @@ class ModuleForm extends \Nette\Application\UI\Control
     /** @var Model\ProjectRepository */
     protected $projectRepository;
 
-    public function __construct(Model\ModuleRepository $moduleRepository, Model\ProjectRepository $projectRepository)
+    /** @var int */
+    private $moduleId;
+
+    /** @var callable  */
+    public $onModuleSave;
+
+    public function __construct($moduleId, Model\ModuleRepository $moduleRepository, Model\ProjectRepository $projectRepository)
     {
+        parent::__construct();
+
+        $this->moduleId = $moduleId;
+
         $this->moduleRepository = $moduleRepository;
 
         $this->projectRepository = $projectRepository;   
@@ -48,16 +58,24 @@ class ModuleForm extends \Nette\Application\UI\Control
         
         $form->addSubmit('save', ' Uložit ')->setAttribute('class', 'btn btn-primary btn-flat');
 
-        $form->onSuccess[] = $this->moduleFormSubmitted;
+        $form->onSuccess[] = [$this, 'processFormValues'];
 
         return $form;
     }
 
-    public function moduleFormSubmitted(Form $form, $values)
-    {                
-        $this->moduleRepository->save($values, $this->presenter->getParameter('id'));
-        
-        $this->presenter->flashMessage('Záznam byl uložen.', 'success');
-        $this->presenter->redirect('Module:');
+    public function processFormValues(Form $form, $values)
+    {
+        $module = $this->moduleRepository->save($values, $this->moduleId);
+
+        $this->onModuleSave($this, $module);
     }
+}
+
+interface IModuleFormFactory
+{
+    /**
+     * @param int $moduleId
+     * @return ModuleForm
+     */
+    public function create($moduleId);
 }

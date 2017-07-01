@@ -3,22 +3,21 @@
 namespace App\Presenters;
 
 use App\Model;
+use App\Component;
 
 use Nette\Application\BadRequestException;
+use Nette\Database\Table\ActiveRow;
 
 class ProjectPresenter extends BasePresenter
 {
-    /**
-     * @var Model\ProjectRepository
-     */
-    protected $projectRepository;
+    /** @var Model\ProjectRepository @inject */
+    public $projectRepository;
 
-    public function __construct(Model\ProjectRepository $projectRepository)
-    {
-        parent::__construct();
+    /** @var Component\IProjectFormFactory @inject */
+    public $projectFormFactory;
 
-        $this->projectRepository = $projectRepository;
-    }
+    /** @var Component\IProjectListFactory @inject */
+    public $projectListFactory;
 
     protected function startup()
     {
@@ -51,14 +50,21 @@ class ProjectPresenter extends BasePresenter
         $this->flashMessage('Záznam byl vymazán.', 'success');
         $this->redirect('Project:');                               
     }
-    
+
     protected function createComponentProjectForm()
     {
-        return $this->context->getService('projectForm');
+        $component = $this->projectFormFactory->create($this->getParameter('id'));
+
+        $component->onProjectSave[] = function(Component\ProjectForm $form, ActiveRow $project) {
+            $this->presenter->flashMessage('Záznam byl uložen.', 'success');
+            $this->presenter->redirect('Project:');
+        };
+
+        return $component;
     }
 
     protected function createComponentProjectList()
     {
-        return $this->context->getService('projectList');
+        return $this->projectListFactory->create();
     }
 }

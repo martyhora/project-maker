@@ -15,6 +15,8 @@ class ModuleList extends \Nette\Application\UI\Control
 
     public function __construct(Model\ModuleRepository $moduleRepository , Model\ProjectRepository $projectRepository)
     {
+        parent::__construct();
+
         $this->moduleRepository = $moduleRepository;
 
         $this->projectRepository = $projectRepository;   
@@ -71,4 +73,12 @@ class ModuleList extends \Nette\Application\UI\Control
 
         return $grid;        
     }
+}
+
+interface IModuleListFactory
+{
+    /**
+     * @return ModuleList
+     */
+    public function create();
 }

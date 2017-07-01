@@ -69,3 +69,11 @@ class ProjectList extends \Nette\Application\UI\Control
         return $grid;        
     }
 }
+
+interface IProjectListFactory
+{
+    /**
+     * @return ProjectList
+     */
+    public function create();
+}

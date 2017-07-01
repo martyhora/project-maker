@@ -3,22 +3,21 @@
 namespace App\Presenters;
 
 use App\Model;
+use App\Component;
 
 use Nette\Application\BadRequestException;
+use Nette\Database\Table\ActiveRow;
 
 class ModulePresenter extends BasePresenter
 {
-    /**
-     * @var Model\ModuleRepository
-     */
-    protected $moduleRepository;
+    /** @var Model\ModuleRepository @inject */
+    public $moduleRepository;
 
-    public function __construct(Model\ModuleRepository $moduleRepository)
-    {
-        parent::__construct();
+    /** @var Component\IModuleFormFactory @inject */
+    public $moduleFormFactory;
 
-        $this->moduleRepository = $moduleRepository;
-    }
+    /** @var Component\IModuleListFactory @inject */
+    public $moduleListFactory;
 
     protected function startup()
     {
@@ -142,11 +141,18 @@ class ModulePresenter extends BasePresenter
     
     protected function createComponentModuleForm()
     {
-        return $this->context->getService('moduleForm');
+        $component = $this->moduleFormFactory->create($this->getParameter('id'));
+
+        $component->onModuleSave[] = function(Component\ModuleForm $form, ActiveRow $module) {
+            $this->presenter->flashMessage('Záznam byl uložen.', 'success');
+            $this->presenter->redirect('Module:');
+        };
+
+        return $component;
     }
 
     protected function createComponentModuleList()
     {
-        return $this->context->getService('moduleList');
+        return $this->moduleListFactory->create();
     }
 }

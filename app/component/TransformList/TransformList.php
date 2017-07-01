@@ -58,3 +58,11 @@ class TransformList extends \Nette\Application\UI\Control
         return $grid;        
     }
 }
+
+interface ITransformListFactory
+{
+    /**
+     * @return TransformList
+     */
+    public function create();
+}

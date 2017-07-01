@@ -1,0 +1,7 @@
+services:
+    - App\Component\IProjectFormFactory
+    - App\Component\IProjectListFactory
+    - App\Component\IModuleFormFactory
+    - App\Component\IModuleListFactory
+    - App\Component\ITransformFormFactory
+    - App\Component\ITransformListFactory

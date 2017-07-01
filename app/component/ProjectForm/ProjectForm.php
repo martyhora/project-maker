@@ -14,8 +14,18 @@ class ProjectForm extends \Nette\Application\UI\Control
     /** @var Model\TransformRepository */
     protected $transformRepository;
 
-    public function __construct(Model\ProjectRepository $projectRepository , Model\TransformRepository $transformRepository)
+    /** @var int */
+    private $projectId;
+
+    /** @var callable  */
+    public $onProjectSave;
+
+    public function __construct($projectId, Model\ProjectRepository $projectRepository, Model\TransformRepository $transformRepository)
     {
+        parent::__construct();
+
+        $this->projectId = $projectId;
+
         $this->projectRepository = $projectRepository;
 
         $this->transformRepository = $transformRepository;   
@@ -43,16 +53,24 @@ class ProjectForm extends \Nette\Application\UI\Control
         $form->addRadioList('transform_id', 'Transformace', $options)->addRule(Form::FILLED, "Pole 'Transformace' je povinné.");
         
         $form->addSubmit('save', ' Uložit ')->setAttribute('class', 'btn btn-primary btn-flat');
-        $form->onSuccess[] = $this->projectFormSubmitted;
+        $form->onSuccess[] = [$this, 'processFormValues'];
 
         return $form;
     }
 
-    public function projectFormSubmitted(Form $form, $values)
-    {                
-        $this->projectRepository->save($values, $this->presenter->getParameter('id'));
-        
-        $this->presenter->flashMessage('Záznam byl uložen.', 'success');
-        $this->presenter->redirect('Project:');
+    public function processFormValues(Form $form, $values)
+    {
+        $project = $this->projectRepository->save($values, $this->projectId);
+
+        $this->onProjectSave($this, $project);
     }
+}
+
+interface IProjectFormFactory
+{
+    /**
+     * @param int $projectId
+     * @return ProjectForm
+     */
+    public function create($projectId);
 }

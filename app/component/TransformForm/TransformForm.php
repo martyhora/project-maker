@@ -11,8 +11,18 @@ class TransformForm extends \Nette\Application\UI\Control
     /** @var Model\TransformRepository */
     protected $transformRepository;
 
-    public function __construct(Model\TransformRepository $transformRepository)
+    /** @var int */
+    private $transformId;
+
+    /** @var callable  */
+    public $onTransformSave;
+
+    public function __construct($transformId, Model\TransformRepository $transformRepository)
     {
+        parent::__construct();
+
+        $this->transformId = $transformId;
+
         $this->transformRepository = $transformRepository;
     }
 
@@ -34,16 +44,24 @@ class TransformForm extends \Nette\Application\UI\Control
         $form->addText('file', 'Balíček')->setAttribute('class', 'form-control')->addRule(Form::FILLED, "Pole 'Balíček' je povinné.");
         
         $form->addSubmit('save', ' Uložit ')->setAttribute('class', 'btn btn-primary btn-flat');
-        $form->onSuccess[] = $this->transformFormSubmitted;
+        $form->onSuccess[] = [$this, 'processFormValues'];
 
         return $form;
     }
 
-    public function transformFormSubmitted(Form $form, $values)
-    {                
-        $this->transformRepository->save($values, $this->presenter->getParameter('id'));
-        
-        $this->presenter->flashMessage('Záznam byl uložen.', 'success');
-        $this->presenter->redirect('Transform:');
+    public function processFormValues(Form $form, $values)
+    {
+        $transform = $this->transformRepository->save($values, $this->transformId);
+
+        $this->onTransformSave($this, $transform);
     }
+}
+
+interface ITransformFormFactory
+{
+    /**
+     * @param int $transformId
+     * @return TransformForm
+     */
+    public function create($transformId);
 }
