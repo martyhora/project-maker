@@ -58,3 +58,11 @@ class CrudList extends \Nette\Application\UI\Control
         return $grid;        
     }
 }
+
+interface ICrudListFactory
+{
+    /**
+     * @return CrudList
+     */
+    public function create();
+}

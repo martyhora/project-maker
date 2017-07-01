@@ -2,25 +2,21 @@
 
 namespace App\Presenters;
 
-use Nette,
-    App\Model;
-
-use Nette\Application\UI\Form;
+use App\Model;
+use App\Component;
 use Nette\Application\BadRequestException;
+use Nette\Database\Table\ActiveRow;
 
 class CrudPresenter extends BasePresenter
 {
-    /**
-     * @var Model\Crud
-     */
-    protected $crudRepository;
+    /** @var Model\Crud @inject */
+    public $crudRepository;
 
-    public function __construct(Model\Crud $crudRepository)
-    {
-        parent::__construct();
+    /** @var Component\ICrudFormFactory @inject */
+    public $crudFormFactory;
 
-        $this->crudRepository = $crudRepository;
-    }
+    /** @var Component\ICrudListFactory @inject */
+    public $crudListFactory;
 
     protected function startup()
     {
@@ -53,14 +49,21 @@ class CrudPresenter extends BasePresenter
         $this->flashMessage('Záznam byl vymazán.', 'success');
         $this->redirect('Crud:');                               
     }
-    
+
     protected function createComponentCrudForm()
     {
-        return $this->context->getService('crudForm');
+        $component = $this->crudFormFactory->create($this->getParameter('id'));
+
+        $component->onCrudSave[] = function(Component\CrudForm $form, ActiveRow $crud) {
+            $this->presenter->flashMessage('Záznam byl uložen.', 'success');
+            $this->presenter->redirect('Crud:');
+        };
+
+        return $component;
     }
 
     protected function createComponentCrudList()
     {
-        return $this->context->getService('crudList');
+        return $this->crudListFactory->create();
     }
 }

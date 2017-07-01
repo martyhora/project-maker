@@ -11,10 +11,20 @@ class CrudForm extends \Nette\Application\UI\Control
     /** @var Model\Crud */
     protected $crudRepository;
 
+    /** @var int */
+    private $crudId;
+
+    /** @var callable  */
+    public $onCrudSave;
+
     /** @additionalComponentDependencyDeclaration */
 
-    public function __construct(Model\Crud $crudRepository /** @additionalComponentDependencyHint */)
+    public function __construct($crudId, Model\Crud $crudRepository /** @additionalComponentDependencyHint */)
     {
+        parent::__construct();
+
+        $this->crudId = $crudId;
+
         $this->crudRepository = $crudRepository;
 
         /** @additionalComponentDependencyAssertion */   
@@ -38,16 +48,24 @@ class CrudForm extends \Nette\Application\UI\Control
 /** @formFields */
         
         $form->addSubmit('save', ' Uložit ')->setAttribute('class', 'btn btn-primary btn-flat');
-        $form->onSuccess[] = $this->crudFormSubmitted;
+        $form->onSuccess[] = [$this, 'processFormValues'];
 
         return $form;
     }
 
-    public function crudFormSubmitted(Form $form, $values)
-    {                
-        $this->crudRepository->save($values, $this->presenter->getParameter('id'));
-        
-        $this->presenter->flashMessage('Záznam byl uložen.', 'success');
-        $this->presenter->redirect('Crud:');
+    public function processFormValues(Form $form, $values)
+    {
+        $crud = $this->crudRepository->save($values, $this->crudId);
+
+        $this->onCrudSave($this, $crud);
     }
+}
+
+interface ICrudFormFactory
+{
+    /**
+     * @param int $crudId
+     * @return CrudForm
+     */
+    public function create($crudId);
 }

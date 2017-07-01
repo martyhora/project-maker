@@ -489,8 +489,8 @@ class CrudMaker implements ITransformation
             'models' => "
     - App\\Model\\{$title}",
             'components' => "
-    {$this->getTitle()}Form: App\Component\\{$title}Form
-    {$this->getTitle()}List: App\Component\\{$title}List",
+    - App\Component\\I{$title}FormFactory
+    - App\Component\\I{$title}ListFactory",
         ];
 
         $firstConfig = key($configs);

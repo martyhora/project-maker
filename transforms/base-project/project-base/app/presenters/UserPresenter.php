@@ -9,17 +9,10 @@ use Nette\Application\UI\Form;
 
 class UserPresenter extends BasePresenter
 {
-	/** @var Model\UserRepository */
-	private $userRepository;
+    /** @var Model\UserRepository @inject */
+    public $userRepository;
 
-	/** @var Model\Authenticator */
-	private $authenticator;
-
-	public function inject(Model\UserRepository $userRepository, Model\Authenticator $authenticator)
-	{
-		$this->userRepository = $userRepository;
-		$this->authenticator  = $authenticator;
-	}
+    /** @var Model\Authenticator @inject */
 
 	protected function startup()
 	{
