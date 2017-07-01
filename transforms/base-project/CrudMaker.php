@@ -76,6 +76,7 @@ class CrudMaker implements ITransformation
         @mkdir($this->buildPath . '/app/component');
         @mkdir($this->buildPath . '/app/component/' . ucfirst($this->getTitle()) . 'Form');
         @mkdir($this->buildPath . '/app/component/' . ucfirst($this->getTitle()) . 'List');
+        @mkdir($this->buildPath . '/sql');
     }
 
     protected function makePresenter()
@@ -454,7 +455,7 @@ class CrudMaker implements ITransformation
 
                 ";
 
-        file_put_contents($this->buildPath . '/app/db.sql', $sql, FILE_APPEND);
+        file_put_contents($this->buildPath . '/sql/db.sql', $sql, FILE_APPEND);
     }
 
     public function make($includeProjectBase = false)
