@@ -25,7 +25,7 @@ class Authenticator extends Nette\Object implements Security\IAuthenticator
 			throw new Security\AuthenticationException('Nesprávné přihlašovací jméno.', self::IDENTITY_NOT_FOUND);
 		}
 
-		if (Passwords::verify($password, $row->password)) {
+		if (!Passwords::verify($password, $row->password)) {
 			throw new Security\AuthenticationException('Nesprávné heslo.', self::INVALID_CREDENTIAL);
 		}
 

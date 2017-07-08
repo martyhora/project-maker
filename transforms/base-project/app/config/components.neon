@@ -1,1 +1,2 @@
 services:
+    - App\Component\IAuthFormFactory
