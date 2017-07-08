@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-class Crud extends BaseRepository
+class CrudRepository extends BaseRepository
 {	   
     protected $tableName = 'crud';
 

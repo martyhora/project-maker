@@ -9,7 +9,7 @@ use Nette\Database\Table\ActiveRow;
 
 class CrudPresenter extends BasePresenter
 {
-    /** @var Model\Crud @inject */
+    /** @var Model\CrudRepository @inject */
     public $crudRepository;
 
     /** @var Component\ICrudFormFactory @inject */

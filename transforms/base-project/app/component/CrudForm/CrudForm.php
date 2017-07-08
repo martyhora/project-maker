@@ -8,7 +8,7 @@ use Nette\Application\UI\Form;
 
 class CrudForm extends \Nette\Application\UI\Control
 {   
-    /** @var Model\Crud */
+    /** @var Model\CrudRepository */
     protected $crudRepository;
 
     /** @var int */
@@ -19,7 +19,7 @@ class CrudForm extends \Nette\Application\UI\Control
 
     /** @additionalComponentDependencyDeclaration */
 
-    public function __construct($crudId, Model\Crud $crudRepository /** @additionalComponentDependencyHint */)
+    public function __construct($crudId, Model\CrudRepository $crudRepository /** @additionalComponentDependencyHint */)
     {
         parent::__construct();
 

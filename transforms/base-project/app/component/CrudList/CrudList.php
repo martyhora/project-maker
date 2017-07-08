@@ -7,12 +7,12 @@ use Nette;
 
 class CrudList extends \Nette\Application\UI\Control
 {   
-    /** @var Model\Crud */
+    /** @var Model\CrudRepository */
     protected $crudRepository;
 
     /** @additionalComponentDependencyDeclaration */
 
-    public function __construct(Model\Crud $crudRepository /** @additionalComponentDependencyHint */)
+    public function __construct(Model\CrudRepository $crudRepository /** @additionalComponentDependencyHint */)
     {
         $this->crudRepository = $crudRepository;
 

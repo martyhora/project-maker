@@ -95,7 +95,7 @@ class CrudMaker implements ITransformation
         $tableNameString = 'protected $tableName = \'' . $this->getTitle() . '\'';
         $newTableNameString = str_replace($this->getTitle(), $tools->fromCamelCase($this->getTitle()), $tableNameString);
 
-        $filename = str_replace(ucfirst(self::BASE_CRUD), ucfirst($this->getTitle()), str_replace(__DIR__ . '/app', $this->buildPath . '/app', $modelPath . ucfirst($this->getTitle()) . '.php'));
+        $filename = str_replace(ucfirst(self::BASE_CRUD), ucfirst($this->getTitle()), str_replace(__DIR__ . '/app', $this->buildPath . '/app', $modelPath . ucfirst($this->getTitle()) . 'Repository.php'));
 
         $content = file_get_contents($filename);
 
@@ -276,7 +276,7 @@ class CrudMaker implements ITransformation
 
           foreach ($dependencyModels as $model)
             {
-                $modelClass = 'Model\\' . ucfirst($model);
+                $modelClass = 'Model\\' . ucfirst($model) . 'Repository';
                 $variableName = '$' . $model . 'Repository';
 
                 $dependencyDeclaration[] = '/** @var ' . $modelClass . ' */
@@ -487,7 +487,7 @@ class CrudMaker implements ITransformation
 
         $configs = [
             'models' => "
-    - App\\Model\\{$title}",
+    - App\\Model\\{$title}Repository",
             'components' => "
     - App\Component\\I{$title}FormFactory
     - App\Component\\I{$title}ListFactory",
