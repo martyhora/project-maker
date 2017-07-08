@@ -10,22 +10,6 @@
     <div class="login-box-body">
         <p class="login-box-msg">Přihlašte se, prosím.</p>
 
-        {form signInForm}
-            <div class="alert alert-danger">
-                {control $form errors}
-            </div>
-
-            <div class="form-group has-feedback">
-                {input username}
-                <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-            </div>
-
-            <div class="form-group has-feedback">
-                {input password}
-                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-            </div>
-
-            {input send}
-        {/form}
+        {control authForm}
   </div>
 </div>

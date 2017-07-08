@@ -2,41 +2,23 @@
 
 namespace App\Presenters;
 
-use Nette;
-
-use Nette\Application\UI;
+use App\Component\AuthForm;
+use App\Component\IAuthFormFactory;
 
 class AuthPresenter extends BasePresenter
 {
-	protected function createComponentSignInForm()
+    /** @var IAuthFormFactory @inject */
+    public $authFormFactory;
+
+	protected function createComponentAuthForm()
 	{
-        $form = new UI\Form;
-		$form->addText('username', 'Username:')
-		     ->setAttribute('class', 'form-control')
-			 ->setRequired('Vyplňte prosím uživatelské jméno.');
+        $component = $this->authFormFactory->create();
 
-		$form->addPassword('password', 'Password:')
-		     ->setAttribute('class', 'form-control')
-			 ->setRequired('Vyplňte prosím heslo.');
+        $component->onAuthSucccess[] = function(AuthForm $form) {
+            $this->redirect('Project:');
+        };
 
-		$form->addSubmit('send', 'Přihlásit se')->setAttribute('style', 'width: 100%')->setAttribute('class', 'btn btn-primary btn-flat');
-
-		$form->onSuccess[] = $this->signInFormSubmitted;
-		return $form;
-	}
-
-	public function signInFormSubmitted($form)
-	{
-		$values = $form->getValues();
-
-		try {
-			$this->getUser()->login($values->username, $values->password);
-		} catch (Nette\Security\AuthenticationException $e) {
-			$form->addError($e->getMessage());
-			return;
-		}
-
-		$this->redirect('Homepage:');
+        return $component;
 	}
 
 	public function actionLogout()
@@ -45,5 +27,4 @@ class AuthPresenter extends BasePresenter
 		$this->flashMessage('Odhlášení proběhlo úspěšně.');
 		$this->redirect('login');
 	}
-
 }

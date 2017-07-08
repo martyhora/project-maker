@@ -1,0 +1,17 @@
+{form form}
+    <div class="alert alert-danger" n:if="$form->hasErrors()">
+        {control $form errors}
+    </div>
+
+    <div class="form-group has-feedback">
+        {input username}
+        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+    </div>
+
+    <div class="form-group has-feedback">
+        {input password}
+        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+    </div>
+
+    {input send}
+{/form}

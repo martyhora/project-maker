@@ -5,3 +5,4 @@ services:
     - App\Component\IModuleListFactory
     - App\Component\ITransformFormFactory
     - App\Component\ITransformListFactory
+    - App\Component\IAuthFormFactory
