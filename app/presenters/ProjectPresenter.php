@@ -24,7 +24,7 @@ class ProjectPresenter extends BasePresenter
         parent::startup();
 
         if (!$this->getUser()->isLoggedIn()) {
-            $this->redirect('Sign:in');
+            $this->redirect('Auth:login');
         }                
     }
 
