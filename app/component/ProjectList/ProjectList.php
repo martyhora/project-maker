@@ -11,14 +11,9 @@ class ProjectList extends \Nette\Application\UI\Control
     /** @var Model\ProjectRepository */
     protected $projectRepository;
 
-    /** @var Model\TransformRepository */
-    protected $transformRepository;
-
-    public function __construct(Model\ProjectRepository $projectRepository , Model\TransformRepository $transformRepository)
+    public function __construct(Model\ProjectRepository $projectRepository)
     {
         $this->projectRepository = $projectRepository;
-
-        $this->transformRepository = $transformRepository;   
     }
 
     public function render()
@@ -36,7 +31,7 @@ class ProjectList extends \Nette\Application\UI\Control
 
         $grid->addColumn('title', 'Název projektu')->enableSort();
 
-        $grid->addColumn('transform_id', 'Transformace')->enableSort();
+        $grid->addColumn('transformation', 'Transformace')->enableSort();
 
         $grid->addColumn('date_created', 'Datum vytvoření')->enableSort();
 
@@ -53,11 +48,10 @@ class ProjectList extends \Nette\Application\UI\Control
         $grid->setFilterFormFactory(function() {
         $form = new Nette\Forms\Container;
             
-        $form->addText('title', 'Název projektu')->setAttribute('class', 'form-control')->addRule(Form::FILLED, "Pole 'Název projektu' je povinné.");
+        $form->addText('title', 'Název projektu')->setAttribute('class', 'form-control');
 
-        $options = $this->transformRepository->findAll()->order('title')->fetchPairs('id', 'title');
-
-        $form->addSelect('transform_id', 'Transformace', $options)->setPrompt('- Vyberte -')->setAttribute('class', 'form-control')->addRule(Form::FILLED, "Pole 'Transformace' je povinné.");
+        $form->addSelect('transformation', 'Transformace', Model\ModuleRepository::$transformations)
+             ->setPrompt('- Vyberte -')->setAttribute('class', 'form-control');
 
         $form->addText('date_created', 'Datum vytvoření')->setAttribute('class', 'form-control');
             $form->addSubmit('filter', 'Filtrovat')->getControlPrototype()->class = 'btn btn-primary btn-flat';

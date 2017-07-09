@@ -4,13 +4,20 @@ namespace App\Model;
 
 use App\Exception\TransformationException;
 use Transform\BaseProjectTransformation;
+use Transform\ITransformation;
 
 class ModuleRepository extends BaseRepository
 {	   
+    const TRANSFORMATION_BASE_NETTE_PROJECT = 'baseNetteProject';
+
     protected $tableName = 'module';
 
     /** @var BaseProjectTransformation */
     private $baseProjectTransformation;
+
+    public static $transformations = [
+        self::TRANSFORMATION_BASE_NETTE_PROJECT => 'Základní Nette projekt',
+    ];
 
     public function __construct(\Nette\Database\Context $database, BaseProjectTransformation $baseProjectTransformation)
     {
@@ -99,11 +106,11 @@ class ModuleRepository extends BaseRepository
             'fields' => json_decode($row->params, true),
         ];
 
-        if (!$this->{$row->project->transform->class_name}) {
-            throw new TransformationException("Transformace {$row->project->transform->class_name} nebyla nalezena.");
-        }
+        $transformation = $this->getTransformation($row->project->transformation);
 
-        $transformation = $this->{$row->project->transform->class_name};
+        if ($transformation === null) {
+            throw new TransformationException("Transformace {$row->project->transformation} nebyla nalezena.");
+        }
 
         $transformation->setProjectName($row->project->title);
 
@@ -115,5 +122,23 @@ class ModuleRepository extends BaseRepository
         $transformation->make(true);
 
         return true;
+    }
+
+    /**
+     * @param string $transformation
+     *
+     * @return ITransformation
+     */
+    private function getTransformation($transformation)
+    {
+        $resultTransformation = null;
+
+        switch ($transformation) {
+            case self::TRANSFORMATION_BASE_NETTE_PROJECT:
+                $resultTransformation = $this->baseProjectTransformation;
+                break;
+        }
+
+        return $resultTransformation;
     }
 }

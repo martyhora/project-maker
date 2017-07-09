@@ -3,4 +3,3 @@ services:
     - App\Model\UserRepository
     - App\Model\ProjectRepository
     - App\Model\ModuleRepository
-    - App\Model\TransformRepository
