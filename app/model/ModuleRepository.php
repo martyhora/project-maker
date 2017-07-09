@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use App\Exception\TransformationException;
 use Transform\ITransformation;
 
 class ModuleRepository extends BaseRepository
@@ -96,6 +97,10 @@ class ModuleRepository extends BaseRepository
         ];
 
         $this->transformation = new $class;
+
+        if (!$this->transformation instanceof ITransformation) {
+            throw new TransformationException('Zvolená transformace je chybná.');
+        }
 
         $this->transformation->setProjectName($row->project->title);
 

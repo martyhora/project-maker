@@ -112,7 +112,7 @@
           <h1>{include title}</h1>
 
           {snippet flashMessages}
-          <div n:foreach="$flashes as $flash" class="flash-message callout callout-{$flash->type}">
+          <div n:foreach="$flashes as $flash" class="flash-message alert alert-{$flash->type}">
             <p>{$flash->message}</p>
           </div>
           {/snippet}

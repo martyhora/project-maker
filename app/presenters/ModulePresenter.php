@@ -2,6 +2,7 @@
 
 namespace App\Presenters;
 
+use App\Exception\TransformationException;
 use App\Model;
 use App\Component;
 
@@ -65,7 +66,12 @@ class ModulePresenter extends BasePresenter
 
     public function actionMakeProject($id)
     {
-        $this->downloadZippedCrud($this->moduleRepository->makeProject($id));
+        try {
+            $this->downloadZippedCrud($this->moduleRepository->makeProject($id));
+        } catch (TransformationException $e) {
+            $this->flashMessage($e->getMessage(), 'danger');
+            $this->redirect('Project:');
+        }
     }
 
     private function downloadZippedCrud($zipFilename)
