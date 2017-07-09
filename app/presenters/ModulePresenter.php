@@ -54,92 +54,28 @@ class ModulePresenter extends BasePresenter
 
     public function actionMake($id)
     {
-        $folder = sha1(time());
+        $zipFilename = $this->moduleRepository->makeCrud($id);
 
-        @mkdir(__DIR__ . '/../../temp/' . $folder);
+        if ($zipFilename === false) {
+            throw new BadRequestException();
+        }
 
-        $this->createCrud($id, $folder);
-
-        $this->zipCrud($folder);
+        $this->downloadZippedCrud($zipFilename);
     }
 
     public function actionMakeProject($id)
     {
-        $folder = sha1(time());
-
-        @mkdir(__DIR__ . '/../../temp/' . $folder);
-
-        foreach ($this->moduleRepository->findAll()->where('project_id', $id) as $row) {
-            $this->createCrud($row->id, $folder);
-        }
-
-        $this->zipCrud($folder);
+        $this->downloadZippedCrud($this->moduleRepository->makeProject($id));
     }
 
-    protected function zipCrud($folder)
+    private function downloadZippedCrud($zipFilename)
     {
-        $zipname = __DIR__ . '/../../temp/project.zip';
-
-        $rootPath = realpath(__DIR__ . '/../../temp/' . $folder);
-
-        $zip = new \ZipArchive();
-        $zip->open($zipname, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
-
-        $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($rootPath),
-            \RecursiveIteratorIterator::LEAVES_ONLY
-        );
-
-        foreach ($files as $name => $file)
-        {
-            if (!$file->isDir())
-            {
-                $filePath = $file->getRealPath();
-                $relativePath = substr($filePath, strlen($rootPath) + 1);
-
-                $zip->addFile($filePath, $relativePath);
-            }
-        }
-
-        $zip->close();
-
         $httpResponse = $this->getHttpResponse();
         $httpResponse->setContentType('application/zip');
-        $httpResponse->setHeader('Content-Disposition', 'attachment; filename="' . basename($zipname) . '"');
-        $httpResponse->setHeader('Content-Length', filesize($zipname));
+        $httpResponse->setHeader('Content-Disposition', 'attachment; filename="' . basename($zipFilename) . '"');
+        $httpResponse->setHeader('Content-Length', filesize($zipFilename));
 
-        $this->sendResponse(new TextResponse(readfile($zipname)));
-    }
-
-    protected function createCrud($id, $folder)
-    {
-        $row = $this->moduleRepository->findRow($id);
-            
-        if (!$row) {
-            throw new BadRequestException();
-        }
-
-        require_once "transforms/{$row->project->transform->url}/{$row->project->transform->class_name}.php";
-
-        $class = "\\{$row->project->transform->class_name}\\{$row->project->transform->class_name}";
-
-        $config = [
-            'title'  => $row->title,
-            'name'   => $row->name,
-            'fields' => json_decode($row->params, true),
-        ];
-
-        $maker = new $class;
-
-        $maker->setProjectName($row->project->title);
-
-        $maker->setBuildPath(__DIR__ . '/../../temp/' . $folder);
-        $maker->setTransformPath(__DIR__ . '/../../transforms/' . $row->project->transform->url . '/');
-        $maker->setConfig($config);
-
-        // $maker->clean();
-
-        $maker->make(true);
+        $this->sendResponse(new TextResponse(readfile($zipFilename)));
     }
     
     protected function createComponentModuleForm()
