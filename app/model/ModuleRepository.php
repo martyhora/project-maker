@@ -12,19 +12,9 @@ class ModuleRepository extends BaseRepository
 
     protected $tableName = 'module';
 
-    /** @var BaseProjectTransformation */
-    private $baseProjectTransformation;
-
     public static $transformations = [
         self::TRANSFORMATION_BASE_NETTE_PROJECT => 'Základní Nette projekt',
     ];
-
-    public function __construct(\Nette\Database\Context $database, BaseProjectTransformation $baseProjectTransformation)
-    {
-        parent::__construct($database);
-
-        $this->baseProjectTransformation = $baseProjectTransformation;
-    }
 
     protected $filterColumns = [
         'like'  => ['name', 'title', 'date_created'],
@@ -135,7 +125,7 @@ class ModuleRepository extends BaseRepository
 
         switch ($transformation) {
             case self::TRANSFORMATION_BASE_NETTE_PROJECT:
-                $resultTransformation = $this->baseProjectTransformation;
+                $resultTransformation = new BaseProjectTransformation();
                 break;
         }
 

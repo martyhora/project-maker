@@ -27,4 +27,3 @@ latte:
 
 services:
     router: App\RouterFactory::createRouter
-    - Transform\BaseProjectTransformation
