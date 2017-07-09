@@ -3,14 +3,21 @@
 namespace App\Model;
 
 use App\Exception\TransformationException;
-use Transform\ITransformation;
+use Transform\BaseProjectTransformation;
 
 class ModuleRepository extends BaseRepository
 {	   
     protected $tableName = 'module';
 
-    /** @var ITransformation */
-    private $transformation;
+    /** @var BaseProjectTransformation */
+    private $baseProjectTransformation;
+
+    public function __construct(\Nette\Database\Context $database, BaseProjectTransformation $baseProjectTransformation)
+    {
+        parent::__construct($database);
+
+        $this->baseProjectTransformation = $baseProjectTransformation;
+    }
 
     protected $filterColumns = [
         'like'  => ['name', 'title', 'date_created'],
@@ -86,30 +93,27 @@ class ModuleRepository extends BaseRepository
             return false;
         }
 
-        require_once "transforms/{$row->project->transform->url}/{$row->project->transform->class_name}.php";
-
-        $class = "\\{$row->project->transform->class_name}\\{$row->project->transform->class_name}";
-
         $config = [
             'title'  => $row->title,
             'name'   => $row->name,
             'fields' => json_decode($row->params, true),
         ];
 
-        $this->transformation = new $class;
-
-        if (!$this->transformation instanceof ITransformation) {
-            throw new TransformationException('Zvolená transformace je chybná.');
+        if (!$this->{$row->project->transform->class_name}) {
+            throw new TransformationException("Transformace {$row->project->transform->class_name} nebyla nalezena.");
         }
 
-        $this->transformation->setProjectName($row->project->title);
+        $transformation = $this->{$row->project->transform->class_name};
 
-        $this->transformation->setBuildPath(__DIR__ . '/../../temp/' . $folder);
-        $this->transformation->setTransformPath(__DIR__ . '/../../transforms/' . $row->project->transform->url . '/');
-        $this->transformation->setConfig($config);
+        $transformation->setProjectName($row->project->title);
+
+        $transformation->setBuildPath(__DIR__ . '/../../temp/' . $folder);
+        $transformation->setConfig($config);
 
         // $this->transform->clean();
 
-        $this->transformation->make(true);
+        $transformation->make(true);
+
+        return true;
     }
 }

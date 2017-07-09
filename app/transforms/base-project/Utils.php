@@ -1,8 +1,8 @@
 <?php
 
-namespace CrudMaker;
+namespace Transform;
 
-class Tools
+class Utils
 {
     public function fromCamelCase($input)
     {

@@ -1,14 +1,12 @@
 <?php
 
-namespace CrudMaker;
-
-use Transform\ITransformation;
+namespace Transform;
 
 require_once __DIR__ . '/../ITransformation.php';
 
-require_once __DIR__ . '/Tools.php';
+require_once __DIR__ . '/Utils.php';
 
-class CrudMaker implements ITransformation
+class BaseProjectTransformation implements ITransformation
 {
     const BASE_CRUD = 'crud';
 
@@ -23,8 +21,9 @@ class CrudMaker implements ITransformation
 
     const DATE_CREATED_FIELD = 'date_created';
 
+    const TRANSFORMATION_DATA_FOLDER = __DIR__ . '/../../../data/transforms/base-project';
+
     private $buildPath = './';
-    private $transformPath = './';
 
     private $projectName = '';
 
@@ -44,6 +43,14 @@ class CrudMaker implements ITransformation
      * @var array
      */
     protected $configs = [];
+
+    /** @var Utils */
+    private $utils;
+
+    public function __construct()
+    {
+        $this->utils = new Utils;
+    }
 
     public function setConfigs($configs)
     {
@@ -81,21 +88,19 @@ class CrudMaker implements ITransformation
 
     private function makePresenter()
     {
-        $this->processFolder(__DIR__ . '/app/presenters/');
+        $this->processFolder(self::TRANSFORMATION_DATA_FOLDER . '/app/presenters/');
     }
 
     private function makeModel()
     {
-        $modelPath = __DIR__ . '/app/model/';
+        $modelPath = self::TRANSFORMATION_DATA_FOLDER . '/app/model/';
 
         $this->processFolder($modelPath);
 
-        $tools = new Tools;
-
         $tableNameString = 'protected $tableName = \'' . $this->getTitle() . '\'';
-        $newTableNameString = str_replace($this->getTitle(), $tools->fromCamelCase($this->getTitle()), $tableNameString);
+        $newTableNameString = str_replace($this->getTitle(), $this->utils->fromCamelCase($this->getTitle()), $tableNameString);
 
-        $filename = str_replace(ucfirst(self::BASE_CRUD), ucfirst($this->getTitle()), str_replace(__DIR__ . '/app', $this->buildPath . '/app', $modelPath . ucfirst($this->getTitle()) . 'Repository.php'));
+        $filename = str_replace(ucfirst(self::BASE_CRUD), ucfirst($this->getTitle()), str_replace(self::TRANSFORMATION_DATA_FOLDER . '/app', $this->buildPath . '/app', $modelPath . ucfirst($this->getTitle()) . 'Repository.php'));
 
         $content = file_get_contents($filename);
 
@@ -146,7 +151,7 @@ class CrudMaker implements ITransformation
 
     private function makeTemplates()
     {
-        $this->processFolder(__DIR__ . '/app/presenters/templates/' . ucfirst(self::BASE_CRUD));
+        $this->processFolder(self::TRANSFORMATION_DATA_FOLDER . '/app/presenters/templates/' . ucfirst(self::BASE_CRUD));
     }
 
     private function getTableByField($field)
@@ -156,9 +161,7 @@ class CrudMaker implements ITransformation
 
     private function getModelNameFromSelectDbField($field)
     {
-        $tools = new Tools;
-
-        return $tools->underscoreToCamelCase($this->getTableByField($field));
+        return $this->utils->underscoreToCamelCase($this->getTableByField($field));
     }
 
     private function getOptionsForSelectBoxLine($field, $params)
@@ -205,7 +208,7 @@ class CrudMaker implements ITransformation
 
     private function makeForm()
     {
-        $formFolder = __DIR__ . '/app/component/' . ucfirst(self::BASE_CRUD) . 'Form';
+        $formFolder = self::TRANSFORMATION_DATA_FOLDER . '/app/component/' . ucfirst(self::BASE_CRUD) . 'Form';
 
         $this->processFolder($formFolder);
 
@@ -215,8 +218,6 @@ class CrudMaker implements ITransformation
         }
 
         $formFields = [];
-
-        $tools = new Tools;
 
         $dependencyModels = [];
 
@@ -252,7 +253,7 @@ class CrudMaker implements ITransformation
             $formFields[] = $formField;
         }
 
-        $formFile = str_replace(ucfirst(self::BASE_CRUD), ucfirst($this->getTitle()), str_replace(__DIR__ . '/app', $this->buildPath . '/app', $formFolder . '/' . ucfirst($this->getTitle()) . 'Form.php'));
+        $formFile = str_replace(ucfirst(self::BASE_CRUD), ucfirst($this->getTitle()), str_replace(self::TRANSFORMATION_DATA_FOLDER . '/app', $this->buildPath . '/app', $formFolder . '/' . ucfirst($this->getTitle()) . 'Form.php'));
 
         $content = file_get_contents($formFile);
 
@@ -295,9 +296,7 @@ class CrudMaker implements ITransformation
 
     private function makeList()
     {
-        $tools = new Tools;
-
-        $listFolder = __DIR__ . '/app/component/' . ucfirst(self::BASE_CRUD) . 'List';
+        $listFolder = self::TRANSFORMATION_DATA_FOLDER . '/app/component/' . ucfirst(self::BASE_CRUD) . 'List';
 
         $this->processFolder($listFolder);
 
@@ -348,7 +347,7 @@ class CrudMaker implements ITransformation
             $listFields[] = $listField;
         }
 
-        $listFile = str_replace(ucfirst(self::BASE_CRUD), ucfirst($this->getTitle()), str_replace(__DIR__ . '/app', $this->buildPath . '/app', $listFolder . '/' . ucfirst($this->getTitle()) . 'List.php'));
+        $listFile = str_replace(ucfirst(self::BASE_CRUD), ucfirst($this->getTitle()), str_replace(self::TRANSFORMATION_DATA_FOLDER . '/app', $this->buildPath . '/app', $listFolder . '/' . ucfirst($this->getTitle()) . 'List.php'));
 
         $content = file_get_contents($listFile);
 
@@ -360,7 +359,7 @@ class CrudMaker implements ITransformation
 
         file_put_contents($listFile, $content);
 
-        $listFile = str_replace(ucfirst(self::BASE_CRUD), ucfirst($this->getTitle()), str_replace(__DIR__ . '/app', $this->buildPath . '/app', $listFolder . '/' . ucfirst($this->getTitle()) . 'List_grid.latte'));
+        $listFile = str_replace(ucfirst(self::BASE_CRUD), ucfirst($this->getTitle()), str_replace(self::TRANSFORMATION_DATA_FOLDER . '/app', $this->buildPath . '/app', $listFolder . '/' . ucfirst($this->getTitle()) . 'List_grid.latte'));
 
         $content = file_get_contents($listFile);
 
@@ -384,7 +383,7 @@ class CrudMaker implements ITransformation
 
             $content = $this->transFormContent($content);
 
-            $newPath = str_replace(ucfirst(self::BASE_CRUD), ucfirst($this->getTitle()), str_replace(__DIR__ . '/app', $this->buildPath . '/app', $path . '/' . $file));
+            $newPath = str_replace(ucfirst(self::BASE_CRUD), ucfirst($this->getTitle()), str_replace(self::TRANSFORMATION_DATA_FOLDER . '/app', $this->buildPath . '/app', $path . '/' . $file));
 
             file_put_contents($newPath, $content);
         }
@@ -400,8 +399,7 @@ class CrudMaker implements ITransformation
 
     private function makeSql()
     {
-        $tools = new Tools;
-        $table = $tools->fromCamelCase($this->getTitle());
+        $table = $this->utils->fromCamelCase($this->getTitle());
 
         $fieldsArr  = [];
         $indexesArr = [];
@@ -496,7 +494,7 @@ class CrudMaker implements ITransformation
         $firstConfig = key($configs);
 
         if (!file_exists("{$this->buildPath}/app/config/{$firstConfig}.neon")) {
-            $this->processFolder(__DIR__ . '/app/config/');
+            $this->processFolder(self::TRANSFORMATION_DATA_FOLDER . '/app/config/');
         }
 
         foreach ($configs as $configFile => $config)
@@ -531,9 +529,7 @@ class CrudMaker implements ITransformation
 
     private function copyProjectBase()
     {
-        $tools = new Tools;
-
-        $tools->copyFolder(__DIR__ . '/project-base', $this->buildPath);
+        $this->utils->copyFolder(self::TRANSFORMATION_DATA_FOLDER . '/project-base', $this->buildPath);
 
         $layoutPath = $this->buildPath . '/app/presenters/templates/@layout.latte';
 
@@ -551,18 +547,11 @@ class CrudMaker implements ITransformation
 
     private function clean()
     {
-        $tools = new Tools;
-
-        $tools->deleteFolder($this->buildPath . '/app');
+        $this->utils->deleteFolder($this->buildPath . '/app');
     }
 
     public function setBuildPath($path)
     {
         $this->buildPath = $path;
-    }
-
-    public function setTransformPath($path)
-    {
-        $this->transformPath = $path;
     }
 }
