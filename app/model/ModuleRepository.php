@@ -2,9 +2,14 @@
 
 namespace App\Model;
 
+use Transform\ITransformation;
+
 class ModuleRepository extends BaseRepository
 {	   
     protected $tableName = 'module';
+
+    /** @var ITransformation */
+    private $transformation;
 
     protected $filterColumns = [
         'like'  => ['name', 'title', 'date_created'],
@@ -90,16 +95,16 @@ class ModuleRepository extends BaseRepository
             'fields' => json_decode($row->params, true),
         ];
 
-        $maker = new $class;
+        $this->transformation = new $class;
 
-        $maker->setProjectName($row->project->title);
+        $this->transformation->setProjectName($row->project->title);
 
-        $maker->setBuildPath(__DIR__ . '/../../temp/' . $folder);
-        $maker->setTransformPath(__DIR__ . '/../../transforms/' . $row->project->transform->url . '/');
-        $maker->setConfig($config);
+        $this->transformation->setBuildPath(__DIR__ . '/../../temp/' . $folder);
+        $this->transformation->setTransformPath(__DIR__ . '/../../transforms/' . $row->project->transform->url . '/');
+        $this->transformation->setConfig($config);
 
-        // $maker->clean();
+        // $this->transform->clean();
 
-        $maker->make(true);
+        $this->transformation->make(true);
     }
 }
