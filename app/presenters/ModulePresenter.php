@@ -6,6 +6,7 @@ use App\Model;
 use App\Component;
 
 use Nette\Application\BadRequestException;
+use Nette\Application\Responses\TextResponse;
 use Nette\Database\Table\ActiveRow;
 
 class ModulePresenter extends BasePresenter
@@ -102,10 +103,12 @@ class ModulePresenter extends BasePresenter
 
         $zip->close();
 
-        header('Content-Type: application/zip');
-        header('Content-disposition: attachment; filename=' . basename($zipname));
-        header('Content-Length: ' . filesize($zipname));
-        readfile($zipname);
+        $httpResponse = $this->getHttpResponse();
+        $httpResponse->setContentType('application/zip');
+        $httpResponse->setHeader('Content-Disposition', 'attachment; filename="' . basename($zipname) . '"');
+        $httpResponse->setHeader('Content-Length', filesize($zipname));
+
+        $this->sendResponse(new TextResponse(readfile($zipname)));
     }
 
     protected function createCrud($id, $folder)
