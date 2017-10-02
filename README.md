@@ -8,7 +8,7 @@ The defined structure of the backend is transformed to a Nette application by de
 
 # Installation
 
-- clone project by running ```git clone https://github.com/martyhora/project-maker``` into your DocumentRoot path
+- clone project by running ```git clone https://github.com/martyhora/project-maker.git``` and set www folder as DocumentRoot
 - run ```composer install``` in the project root
 - run ```npm i``` in the project root
 - run ```webpack --watch``` to compile changes in JS a LESS files
