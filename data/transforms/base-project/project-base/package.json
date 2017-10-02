@@ -1,5 +1,5 @@
 {
-  "name": "project-maker",
+  "name": "app-code-maker-application",
   "version": "0.1.0",
   "description": "Project Maker generated application",
   "main": "index.php",
@@ -9,7 +9,7 @@
   "author": "Martin Hora",
   "license": "MIT",
   "devDependencies": {
-    "admin-lte": "^2.3.11",
+    "admin-lte": "2.3.5",
     "autoprefixer": "^7.1.1",
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
@@ -20,6 +20,8 @@
     "file-loader": "^0.11.1",
     "less": "^2.7.2",
     "less-loader": "^4.0.3",
+    "nette-forms": "^2.4.2",
+    "nette.ajax.js": "^2.1.0",
     "postcss-loader": "^2.0.5",
     "script-loader": "^0.7.0",
     "style-loader": "^0.18.1",
