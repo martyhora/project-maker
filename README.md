@@ -6,6 +6,8 @@ The application generates all the grids and forms for you.
 
 The defined structure of the backend is transformed to a Nette application by default but the transforming options are modular and could be added. The transforms are stored in the folder ```transforms```.
 
+![alt text](https://martyhora.cz/img/portfolio/thumbnails/4.png)
+
 # Installation
 
 - clone project by running ```git clone https://github.com/martyhora/project-maker.git``` and set www folder as DocumentRoot
